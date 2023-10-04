@@ -1,0 +1,28 @@
+body {
+    background-color: #f2f2f2;
+}
+
+.center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 250px;
+}
+
+.btnlogin {
+    background-color: #141E46;
+    color: #f2f2f2;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.bold {
+    font-weight: bold;
+    color: #241468;
+    font-size: 20px;
+}
+
+h1, h2, h3 {
+    text-align: center;
+    color: #141E46;
+}

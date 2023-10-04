@@ -1,0 +1,54 @@
+
+:root {
+    --bgcolor: #f2f2f2;
+    --textcolor: #141E46;
+  }
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bgcolor);
+}
+
+.center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 250px;
+}
+
+h1, h2, h3 {
+    text-align: center;
+    color: var(--textcolor);
+}
+
+/* Float four columns side by side */
+.column {
+    float: left;
+    width: 25%;
+    padding: 10px 10px;
+  }
+  
+  /* Remove extra left and right margins, due to padding in columns */
+  .row {margin: 0 -5px;}
+  
+  /* Clear floats after the columns */
+  .row:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+  
+  /* Style the counter cards */
+  .card {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); /* this adds the "card" effect */
+    padding: 16px;
+    text-align: center;
+    background-color: #f1f1f1;
+  }
+
+  .card:hover {
+        background-color: #ddd;
+  }
