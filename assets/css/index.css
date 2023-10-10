@@ -22,5 +22,10 @@ table {
 
 .th-2 {
     padding: 10px; 
+    background-color: #176B87;
+}
+
+.th-3 {
+    padding: 10px; 
     background-color: #419197;
 }

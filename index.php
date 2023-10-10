@@ -13,6 +13,7 @@
             <tr>
                 <th class="th-1"> <a href="pages/login.php" style="color: #F5FCCD;"> Login Page </a></th>
                 <th class="th-2"> <a href="pages/product.php" style="color: #F5FCCD"> Product List </a></th>
+                <th class="th-3"> <a href="pages/dashboard.php" style="color: #F5FCCD"> Dashboard </a></th>
             </tr>
             <tr>
             </tr>
