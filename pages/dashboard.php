@@ -227,7 +227,7 @@
             </ul>
           </li>
           <li class="nav-item">
-            <a href="newproduct.html" class="nav-link">
+            <a href="newproduct.php" class="nav-link">
               <i class="nav-icon fas fa-th"></i>
               <p>
                 Product
