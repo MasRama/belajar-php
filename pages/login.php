@@ -11,7 +11,7 @@
         <h1> Halo! Ini adalah contoh Login Page </h1>
         <img src="../assets/images/space.jpg" alt="space" class="center">
         <br>
-        <form action="#" class="center">
+        <form action="loginproc.php" method="POST" class="center">
             <label for="email" class="bold">Email</label> <br>
             <input type="email" name="email" placeholder="email anda">
             <br> <br>
