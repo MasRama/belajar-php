@@ -1,9 +1,28 @@
 <?php 
   include_once("koneksi_crud.php");
-  $result = mysqli_query($conn, "SELECT * FROM products ORDER BY id ASC");
-  $index = 1;
+  $result = mysqli_query($conn, "SELECT id FROM product_categories ORDER BY id ASC");
   // print_r($result);
 ?>
+
+<?php
+ if(isset($_POST['submit'])) {
+     $name = $_POST['nama'];
+     $kat = $_POST['kategori'];
+     $kode = $_POST['kode'];
+     $desc = $_POST['desc'];
+     $price = $_POST['harga'];
+     $stock = $_POST['stok'];
+
+     $insert_query = "INSERT INTO products(product_name,category_id,product_code,description,price,stock) VALUES('$name','$kat','$kode','$desc','$price','$stock')";
+
+     if (mysqli_query($conn, $insert_query)) {
+        header("Location:newproduct.php");
+    } else {
+        echo "Error: " . mysqli_error($conn);
+    }
+    
+ }
+ ?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -255,13 +274,13 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">CRUD - Product Listing</h1>
+            <h1 class="m-0">CRUD - Add Product</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="../index.html">Home</a></li>
               <li class="breadcrumb-item"><a href="./dashboard.html">Dashboard</a></li>
-              <li class="breadcrumb-item active">Product Listing</li>
+              <li class="breadcrumb-item active">Add Product</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -276,7 +295,7 @@
         
         <!-- /.row -->
         <!-- Main row -->
-        <div class="row">
+        <div class="row align-items-center justify-content-center">
           <!-- Left col -->
           
            
@@ -285,80 +304,57 @@
           <section class="content">
             <div class="container-fluid">
               <div class="row">
-                <div class="col-12">
-                  <div class="card">
-                    <div class="card-header d-flex justify-content-end">
-                      <h3 class="card-title col align-self-center">
-                        List Produk
-                      </h3>
-                      <!-- <div class="col justify-content-md-end"> -->
-                      <a href="./addproduct.php" class="btn btn-primary col-sm-2">
-                        <i class="nav-icon fas fa-plus mr-2"></i> Tambah Produk
-                      </a>
-                      <!-- </div> -->
-                    </div>
-                    <!-- /.card-header -->
-                    <div class="card-body">
-                      <table class="table table-bordered">
-                        <thead>
-                          <tr>
-                            <th style="width: 10px">No</th>
-                            <th>Nama</th>
-                            <th>Kode</th>
-                            <th>Harga</th>
-                            <th>Stok</th>
-                            <th>Kategori</th>
-                            <th>Deskripsi</th>
-                            <th>Aksi</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-
-                        <?php  
-                          while($prod_data = mysqli_fetch_array($result)) {         
-                              echo "<tr>";
-                              echo "<td> ". $index ." </td>";
-                              echo "<td>".$prod_data['product_name']."</td>";
-                              echo "<td>".$prod_data['product_code']."</td>";
-                              echo "<td>".$prod_data['price']."</td>";   
-                              echo "<td>".$prod_data['stock']."</td>";   
-                              echo "<td>".$prod_data['category_id']."</td>"; 
-                              echo "<td>".$prod_data['description']."</td>";
-                              echo "<td> <a href='updateproduct.php?id=$prod_data[id]'> <button class='btn btn-info'> <i class='nav-icon fas fa-edit mr-2'></i>Edit</button> </a>  | <a href='delproduct.php?id=$prod_data[id]'> <button class='btn btn-danger'> <i class='nav-icon fas fa-trash-alt mr-2'></i>Delete</button>  </a> </td>"; 
-                              // echo "<td><a href='edit.php?id=$user_data[id]'>Edit</a> | <a href='delete.php?id=$user_data[id]'>Delete</a></td>";
-                              echo "</tr>";
-                              $index++;        
-                          }
-                        ?>
-
-                        </tbody>
-                      </table>
-                    </div>
-                    <!-- /.card-body -->
-                    <div class="card-footer clearfix">
-                      <ul class="pagination pagination-sm m-0 float-right">
-                        <li class="page-item">
-                          <a class="page-link" href="#">&laquo;</a>
-                        </li>
-                        <li class="page-item">
-                          <a class="page-link" href="#">1</a>
-                        </li>
-                        <li class="page-item">
-                          <a class="page-link" href="#">2</a>
-                        </li>
-                        <li class="page-item">
-                          <a class="page-link" href="#">3</a>
-                        </li>
-                        <li class="page-item">
-                          <a class="page-link" href="#">&raquo;</a>
-                        </li>
-                      </ul>
-                    </div>
+               
+                <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">Tambah Produk</h3>
+              </div>
+              <!-- /.card-header -->
+              <!-- form start -->
+              <form action="addproduct.php" method="post">
+                <div class="card-body">
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">Nama Produk</label>
+                    <input type="text" name="nama" class="form-control" id="nama" placeholder="Masukkan Nama Produk">
                   </div>
+                  <div class="form-group">
+                    <label for="exampleInputPassword1">Kode Produk</label>
+                    <input type="text" name="kode" class="form-control" id="kode" placeholder="Masukkan Kode Produk">
+                  </div>
+                  <div class="form-group">
+                    <label for="exampleInputPassword1">Harga Produk</label>
+                    <input type="number" name="harga" class="form-control" id="harga" placeholder="Masukkan Harga Produk">
+                  </div>
+                  <div class="form-group">
+                    <label for="exampleInputPassword1">Stok Produk</label>
+                    <input type="number" name="stok" class="form-control" id="stok" placeholder="Masukkan Stok Produk">
+                  </div>
+                  <div class="form-group">
+                    <label for="exampleInputPassword1">Kategori Produk</label>
+                    <select name="kategori" id="kategori" class="form-control" required>
+                        <option disabled selected value> Pilih Kategori </option>
+                        <?php
+                            foreach ($result as $category) {
+                            echo "<option value='" . $category['id'] . "'>" .$category['id'] . "</option>";
+                        }
+                        ?>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="exampleInputPassword1">Deskripsi Produk</label>
+                    <input type="text" name="desc" class="form-control" id="desc" placeholder="Masukkan Deskripsi Produk">
+                  </div>
+                </div>
+                <!-- /.card-body -->
+
+                <div class="card-footer">
+                  <input type="submit" name="submit" class="btn btn-primary">
+                </div>
+              </form>
+            </div>
                   <!-- /.card -->
                 </div>
-                <!-- /.col -->
-              </div>
+                
               <!-- /.row -->
             </div>
             <!-- /.container-fluid -->
@@ -367,12 +363,7 @@
            
           
          
-          <section class="col-lg-5 connectedSortable">
-
-            <!-- Main content -->
-        
-        
-          </section>
+          
           <!-- right col -->
         </div>
         <!-- /.row (main row) -->
@@ -431,5 +422,6 @@
 <script src="../AdminLTE/dist/js/demo.js"></script>
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <script src="../AdminLTE/dist/js/pages/dashboard.js"></script>
+
 </body>
 </html>
