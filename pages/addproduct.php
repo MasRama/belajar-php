@@ -1,6 +1,6 @@
 <?php 
   include_once("koneksi_crud.php");
-  $result = mysqli_query($conn, "SELECT id FROM product_categories ORDER BY id ASC");
+  $result = mysqli_query($conn, "SELECT * FROM product_categories ORDER BY id ASC");
   // print_r($result);
 ?>
 
@@ -335,7 +335,7 @@
                         <option disabled selected value> Pilih Kategori </option>
                         <?php
                             foreach ($result as $category) {
-                            echo "<option value='" . $category['id'] . "'>" .$category['id'] . "</option>";
+                            echo "<option value='" . $category['id'] . "'>" .$category['id']." - ".$category['category_name'] . "</option>";
                         }
                         ?>
                     </select>

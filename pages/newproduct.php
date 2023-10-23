@@ -11,6 +11,14 @@
     $hasil_rupiah = "Rp " . number_format($angka,0,',','.');
     return $hasil_rupiah;
   }
+
+  //get category name by id
+  function getCategory($id) {
+    global $conn;
+    $result = mysqli_query($conn, "SELECT * FROM product_categories WHERE id = $id");
+    $category = mysqli_fetch_assoc($result);
+    return $category['category_name'];
+  }
   
 
   //check if page is empty
@@ -320,7 +328,9 @@
                       <button type="submit" class="btn btn-default">
                         <i class="fas fa-search"></i>
                       </button>
-                     
+
+                      
+
                     </div>
                   </div>
                   </form>
@@ -354,7 +364,7 @@
                               echo "<td>".$prod_data['product_code']."</td>";
                               echo "<td>".rupiah($prod_data['price'])."</td>";   
                               echo "<td>".$prod_data['stock']."</td>";   
-                              echo "<td>".$prod_data['category_id']."</td>"; 
+                              echo "<td>".getCategory($prod_data['category_id'])."</td>"; 
                               echo "<td>".$prod_data['description']."</td>";
                               echo "<td> <a href='updateproduct.php?id=$prod_data[id]'> <button class='btn btn-info'> <i class='nav-icon fas fa-edit mr-2'></i>Edit</button> </a>  | <a href='delproduct.php?id=$prod_data[id]'> <button class='btn btn-danger'> <i class='nav-icon fas fa-trash-alt mr-2'></i>Delete</button>  </a> </td>"; 
                               // echo "<td><a href='edit.php?id=$user_data[id]'>Edit</a> | <a href='delete.php?id=$user_data[id]'>Delete</a></td>";

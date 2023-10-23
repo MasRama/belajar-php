@@ -1,6 +1,6 @@
 <?php 
   include_once("koneksi_crud.php");
-  $result = mysqli_query($conn, "SELECT id FROM product_categories ORDER BY id ASC");
+  $result = mysqli_query($conn, "SELECT * FROM product_categories ORDER BY id ASC");
   // print_r($result);
 
 ?>
@@ -338,34 +338,38 @@ while($prod_data = mysqli_fetch_array($dataold))
                 <div class="card-body">
                   <div class="form-group">
                     <label for="exampleInputEmail1">Nama Produk</label>
-                    <input type="text" value=<?php echo $name;?> name="nama" class="form-control" id="nama" placeholder="Masukkan Nama Produk">
+                    <input type="text" value="<?php echo $name;?>" name="nama" class="form-control" id="nama" placeholder="Masukkan Nama Produk">
                   </div>
                   <div class="form-group">
                     <label for="exampleInputPassword1">Kode Produk</label>
-                    <input type="text" value=<?php echo $kode;?> name="kode" class="form-control" id="kode" placeholder="Masukkan Kode Produk">
+                    <input type="text" value="<?php echo $kode;?>" name="kode" class="form-control" id="kode" placeholder="Masukkan Kode Produk">
                   </div>
                   <div class="form-group">
                     <label for="exampleInputPassword1">Harga Produk</label>
-                    <input type="number" value=<?php echo $price;?> name="harga" class="form-control" id="harga" placeholder="Masukkan Harga Produk">
+                    <input type="number" value="<?php echo $price;?>" name="harga" class="form-control" id="harga" placeholder="Masukkan Harga Produk">
                   </div>
                   <div class="form-group">
                     <label for="exampleInputPassword1">Stok Produk</label>
-                    <input type="number" value=<?php echo $stock;?> name="stok" class="form-control" id="stok" placeholder="Masukkan Stok Produk">
+                    <input type="number" value="<?php echo $stock;?>" name="stok" class="form-control" id="stok" placeholder="Masukkan Stok Produk">
                   </div>
                   <div class="form-group">
                     <label for="exampleInputPassword1">Kategori Produk</label>
                     <select name="kategori" id="kategori" class="form-control" required>
-                        <option disabled selected value> <?php echo $kat;?> </option>
                         <?php
                             foreach ($result as $category) {
-                            echo "<option value='" . $category['id'] . "'>" .$category['id'] . "</option>";
+                              //if selected id
+                              if ($category['id'] == $kat) {
+                                echo "<option value='" . $category['id'] . "' selected>" .$category['id']." - ". $category['category_name'] . "</option>";
+                              } else {
+                                echo "<option value='" . $category['id'] . "'>" .$category['id']." - ". $category['category_name'] . "</option>";
+                              }
                         }
                         ?>
                     </select>
                   </div>
                   <div class="form-group">
                     <label for="exampleInputPassword1">Deskripsi Produk</label>
-                    <input type="text" value=<?php echo $desc;?> name="desc" class="form-control" id="desc" placeholder="Masukkan Deskripsi Produk">
+                    <input type="text" value="<?php echo $desc;?>" name="desc" class="form-control" id="desc" placeholder="Masukkan Deskripsi Produk">
                   </div>
                 </div>
                 <!-- /.card-body -->
