@@ -1,8 +1,24 @@
 <?php 
   include_once("koneksi_crud.php");
-  $result = mysqli_query($conn, "SELECT * FROM products ORDER BY id ASC");
-  $index = 1;
-  // print_r($result);
+
+  $id = $_GET['page'];
+
+  $alldata = mysqli_query($conn, "SELECT * FROM products;");
+  $rowcount = mysqli_num_rows( $alldata );
+
+  //format number to rupiah
+  function rupiah($angka){
+    $hasil_rupiah = "Rp " . number_format($angka,0,',','.');
+    return $hasil_rupiah;
+  }
+  
+
+  //check if page is empty
+  $page = (empty($_GET['page'])) ? 1 : $_GET['page'];
+  $offset = ($page - 1) * 5;
+
+  $result = mysqli_query($conn, "SELECT * FROM products ORDER BY id ASC LIMIT 5 OFFSET $offset");
+  
 ?>
 
 <!DOCTYPE html>
@@ -287,14 +303,29 @@
               <div class="row">
                 <div class="col-12">
                   <div class="card">
-                    <div class="card-header d-flex justify-content-end">
+                    <div class="card-header d-flex justify-content-end">                   
                       <h3 class="card-title col align-self-center">
-                        List Produk
-                      </h3>
-                      <!-- <div class="col justify-content-md-end"> -->
                       <a href="./addproduct.php" class="btn btn-primary col-sm-2">
                         <i class="nav-icon fas fa-plus mr-2"></i> Tambah Produk
                       </a>
+                      </h3>
+                      <!-- <div class="col justify-content-md-end"> -->
+                     
+                  <form action="" class="align-self-center">
+                    <h5>Cari Produk</h5>
+                  <div class="input-group input-group-sm" style="width: 150px;">
+                    <input type="text" name="table_search" class="form-control float-right" placeholder="Cari produk">
+
+                    <div class="input-group-append">
+                      <button type="submit" class="btn btn-default">
+                        <i class="fas fa-search"></i>
+                      </button>
+                     
+                    </div>
+                  </div>
+                  </form>
+                      
+                                   
                       <!-- </div> -->
                     </div>
                     <!-- /.card-header -->
@@ -315,12 +346,13 @@
                         <tbody>
 
                         <?php  
-                          while($prod_data = mysqli_fetch_array($result)) {         
+                        $index = $page * 5 - 4;
+                          while($prod_data = mysqli_fetch_array($result)) {
                               echo "<tr>";
                               echo "<td> ". $index ." </td>";
                               echo "<td>".$prod_data['product_name']."</td>";
                               echo "<td>".$prod_data['product_code']."</td>";
-                              echo "<td>".$prod_data['price']."</td>";   
+                              echo "<td>".rupiah($prod_data['price'])."</td>";   
                               echo "<td>".$prod_data['stock']."</td>";   
                               echo "<td>".$prod_data['category_id']."</td>"; 
                               echo "<td>".$prod_data['description']."</td>";
@@ -337,21 +369,28 @@
                     <!-- /.card-body -->
                     <div class="card-footer clearfix">
                       <ul class="pagination pagination-sm m-0 float-right">
-                        <li class="page-item">
-                          <a class="page-link" href="#">&laquo;</a>
-                        </li>
-                        <li class="page-item">
-                          <a class="page-link" href="#">1</a>
-                        </li>
-                        <li class="page-item">
-                          <a class="page-link" href="#">2</a>
-                        </li>
-                        <li class="page-item">
-                          <a class="page-link" href="#">3</a>
-                        </li>
-                        <li class="page-item">
-                          <a class="page-link" href="#">&raquo;</a>
-                        </li>
+                        <?php
+                          //link back
+                          if($page == 1) {
+                            echo "<li class='page-item disabled'><a class='page-link' href='#'>&laquo;</a></li>";
+                          } else {
+                            echo "<li class='page-item'><a class='page-link' href='newproduct.php?page=".($page - 1)."'>&laquo;</a></li>";
+                          }
+                          for($i = 1; $i <= ceil($rowcount / 5); $i++) {
+                            //if page active
+                            if($i == $page) {
+                              echo "<li class='page-item'><a class='page-link' style='background-color: #007bff; color: white' href='newproduct.php?page=$i'>$i</a></li>";
+                            } else {
+                              echo "<li class='page-item'><a class='page-link' href='newproduct.php?page=$i'>$i</a></li>";
+                            }
+                          }
+                          //link after
+                          if($page == ceil($rowcount / 5)) {
+                            echo "<li class='page-item disabled'><a class='page-link' href='#'>&raquo;</a></li>";
+                          } else {
+                            echo "<li class='page-item'><a class='page-link' href='newproduct.php?page=".($page + 1)."'>&raquo;</a></li>";
+                          }
+                        ?>
                       </ul>
                     </div>
                   </div>
