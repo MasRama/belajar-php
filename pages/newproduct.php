@@ -29,7 +29,7 @@
     $search = $_GET['search'];
     $result = mysqli_query($conn, "SELECT * FROM products WHERE product_name LIKE '%$search%' OR category_id LIKE '%$search%' OR description LIKE '%$search%' ORDER BY id ASC LIMIT 5 OFFSET $offset");
 
-    $resultall = mysqli_query($conn, "SELECT * FROM products WHERE product_name LIKE '%$search%'");
+    $resultall = mysqli_query($conn, "SELECT * FROM products WHERE product_name LIKE '%$search%' OR category_id LIKE '%$search%' OR description LIKE '%$search%'");
     $rowcount = mysqli_num_rows( $resultall );
 
   } else {
@@ -347,7 +347,6 @@
                       </button>
 
                       
-
                     </div>
                   </div>
                   </form>
