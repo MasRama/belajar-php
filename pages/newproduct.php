@@ -3,8 +3,12 @@
 
   $id = $_GET['page'];
 
+  //check if page is empty
+  $page = (empty($_GET['page'])) ? 1 : $_GET['page'];
+  $offset = ($page - 1) * 5;
+
+
   $alldata = mysqli_query($conn, "SELECT * FROM products;");
-  
 
   //format number to rupiah
   function rupiah($angka){
@@ -12,29 +16,27 @@
     return $hasil_rupiah;
   }
 
-  //get category name by id
-  function getCategory($id) {
-    global $conn;
-    $result = mysqli_query($conn, "SELECT * FROM product_categories WHERE id = $id");
-    $category = mysqli_fetch_assoc($result);
-    return $category['category_name'];
-  }
-
-  //check if page is empty
-  $page = (empty($_GET['page'])) ? 1 : $_GET['page'];
-  $offset = ($page - 1) * 5;
 
   //search product
   if(isset($_GET['search'])) {
     $search = $_GET['search'];
-    $result = mysqli_query($conn, "SELECT * FROM products WHERE product_name LIKE '%$search%' OR category_id LIKE '%$search%' OR description LIKE '%$search%' ORDER BY id ASC LIMIT 5 OFFSET $offset");
+    $viewallsearch = mysqli_query($conn, "CREATE OR REPLACE VIEW allproduksearch AS SELECT products.product_name, products.price, products.category_id, products.product_code, products.unit, products.description, products.stock, product_categories.category_name FROM products INNER JOIN product_categories ON products.category_id=product_categories.id WHERE products.product_name LIKE '%$search%' OR products.category_id LIKE '%$search%' OR products.description LIKE '%$search%' ORDER BY products.id ASC LIMIT 5 OFFSET $offset");
+    if(!$viewallsearch) {
+      echo "Error creating view: " . mysqli_error($conn);
+    } else {
+      $result = mysqli_query($conn, "SELECT * FROM allproduksearch");
 
-    $resultall = mysqli_query($conn, "SELECT * FROM products WHERE product_name LIKE '%$search%' OR category_id LIKE '%$search%' OR description LIKE '%$search%'");
-    $rowcount = mysqli_num_rows( $resultall );
-
+      $resultall = mysqli_query($conn, "SELECT * FROM products WHERE product_name LIKE '%$search%' OR category_id LIKE '%$search%' OR description LIKE '%$search%'");
+      $rowcount = mysqli_num_rows( $resultall );
+    }
   } else {
-    $result = mysqli_query($conn, "SELECT * FROM products ORDER BY id ASC LIMIT 5 OFFSET $offset");
-    $rowcount = mysqli_num_rows( $alldata );
+    $viewall = mysqli_query($conn, "CREATE OR REPLACE VIEW allproduk AS SELECT products.product_name, products.price, products.category_id, products.product_code, products.unit, products.description, products.stock, product_categories.category_name FROM products INNER JOIN product_categories ON products.category_id=product_categories.id ORDER BY products.id ASC LIMIT 5 OFFSET $offset");
+    if(!$viewall) {
+      echo "Error creating view: " . mysqli_error($conn);
+    } else {
+      $result = mysqli_query($conn, "SELECT * FROM allproduk");
+      $rowcount = mysqli_num_rows( $alldata );
+    }
   }
 
   
@@ -363,6 +365,7 @@
                             <th>Nama</th>
                             <th>Kode</th>
                             <th>Harga</th>
+                            <th>Unit</th>
                             <th>Stok</th>
                             <th>Kategori</th>
                             <th>Deskripsi</th>
@@ -378,9 +381,10 @@
                               echo "<td> ". $index ." </td>";
                               echo "<td>".$prod_data['product_name']."</td>";
                               echo "<td>".$prod_data['product_code']."</td>";
-                              echo "<td>".rupiah($prod_data['price'])."</td>";   
+                              echo "<td>".rupiah($prod_data['price'])."</td>"; 
+                              echo "<td>".$prod_data['unit']."</td>";   
                               echo "<td>".$prod_data['stock']."</td>";   
-                              echo "<td>".getCategory($prod_data['category_id'])."</td>"; 
+                              echo "<td>".$prod_data['category_name']."</td>"; 
                               echo "<td>".$prod_data['description']."</td>";
                               echo "<td> <a href='updateproduct.php?id=$prod_data[id]'> <button class='btn btn-info'> <i class='nav-icon fas fa-edit mr-2'></i>Edit</button> </a>  | <a href='delproduct.php?id=$prod_data[id]'> <button class='btn btn-danger'> <i class='nav-icon fas fa-trash-alt mr-2'></i>Delete</button>  </a> </td>"; 
                               // echo "<td><a href='edit.php?id=$user_data[id]'>Edit</a> | <a href='delete.php?id=$user_data[id]'>Delete</a></td>";
