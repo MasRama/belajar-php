@@ -1,6 +1,14 @@
 <?php 
   include_once("koneksi_crud.php");
   
+  $produk = mysqli_query($conn, "SELECT * FROM products");
+  $produkcount = mysqli_num_rows($produk);
+
+  $customer = mysqli_query($conn, "SELECT * FROM customers");
+  $customercount = mysqli_num_rows($customer);
+
+  $vendor = mysqli_query($conn, "SELECT * FROM vendors");
+  $vendorcount = mysqli_num_rows($vendor);
 ?>
 
 <!DOCTYPE html>
@@ -275,24 +283,89 @@
         
         <!-- /.row -->
         <!-- Main row -->
-        <div class="row">
+        
           <!-- Left col -->
           
            
            
             <!-- Main content -->
-          <section class="content">
-            <div class="container-fluid">
-              <div class="row">
-               <div class="col-12"> 
+            <section class="content">
+      <div class="container-fluid">
+        <!-- Small boxes (Stat box) -->
+        <div class="row">
+          <div class="col-lg-4 col-6">
+            <!-- small box -->
+            <div class="small-box bg-info">
+              <div class="inner">
+                <h3> <?php echo $produkcount ?> </h3>
 
-               </div>
-                <!-- /.col -->
+                <p>Jumlah Produk</p>
               </div>
-              <!-- /.row -->
+              <div class="icon">
+                <i class="ion ion-bag"></i>
+              </div>
+              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
-            <!-- /.container-fluid -->
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-4 col-6">
+            <!-- small box -->
+            <div class="small-box bg-success">
+              <div class="inner">
+                <h3> <?php echo $customercount; ?> </h3>
+
+                <p>Jumlah Customer</p>
+              </div>
+              <div class="icon">
+                <i class="ion ion-stats-bars"></i>
+              </div>
+              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-4 col-6">
+            <!-- small box -->
+            <div class="small-box bg-warning">
+              <div class="inner">
+                <h3> <?php echo $vendorcount; ?>  </h3>
+
+                <p>Jumlah Vendor</p>
+              </div>
+              <div class="icon">
+                <i class="ion ion-person-add"></i>
+              </div>
+              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <!-- ./col -->
+         
+          <!-- ./col -->
+        </div>
+        <!-- /.row -->
+        <!-- Main row -->
+        <div class="row">
+          <!-- Left col -->
+          <section class="col-lg-7 connectedSortable">
+            
+            <!-- /.card -->
           </section>
+          <!-- /.Left col -->
+          <!-- right col (We are only adding the ID to make the widgets sortable)-->
+          <section class="col-lg-5 connectedSortable">
+
+           
+
+            <!-- solid sales graph -->
+           
+            <!-- /.card -->
+
+           
+          </section>
+          <!-- right col -->
+        </div>
+        <!-- /.row (main row) -->
+      </div><!-- /.container-fluid -->
+    </section>
               
            
           
