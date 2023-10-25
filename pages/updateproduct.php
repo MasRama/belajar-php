@@ -330,7 +330,7 @@ while($prod_data = mysqli_fetch_array($dataold))
                
                 <div class="card card-primary">
               <div class="card-header">
-                <h3 class="card-title">Tambah Produk</h3>
+                <h3 class="card-title">Edit Produk</h3>
               </div>
               <!-- /.card-header -->
               <!-- form start -->
