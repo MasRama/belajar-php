@@ -20,7 +20,7 @@
   //search product
   if(isset($_GET['search'])) {
     $search = $_GET['search'];
-    $viewallsearch = mysqli_query($conn, "CREATE OR REPLACE VIEW allproduksearch AS SELECT products.product_name, products.price, products.category_id, products.product_code, products.unit, products.description, products.stock, product_categories.category_name FROM products INNER JOIN product_categories ON products.category_id=product_categories.id WHERE products.product_name LIKE '%$search%' OR products.category_id LIKE '%$search%' OR products.description LIKE '%$search%' ORDER BY products.id ASC LIMIT 5 OFFSET $offset");
+    $viewallsearch = mysqli_query($conn, "CREATE OR REPLACE VIEW allproduksearch AS SELECT products.product_name, products.id, products.price, products.category_id, products.product_code, products.unit, products.description, products.stock, product_categories.category_name FROM products INNER JOIN product_categories ON products.category_id=product_categories.id WHERE products.product_name LIKE '%$search%' OR products.category_id LIKE '%$search%' OR products.description LIKE '%$search%' ORDER BY products.id ASC LIMIT 5 OFFSET $offset");
     if(!$viewallsearch) {
       echo "Error creating view: " . mysqli_error($conn);
     } else {
@@ -30,7 +30,7 @@
       $rowcount = mysqli_num_rows( $resultall );
     }
   } else {
-    $viewall = mysqli_query($conn, "CREATE OR REPLACE VIEW allproduk AS SELECT products.product_name, products.price, products.category_id, products.product_code, products.unit, products.description, products.stock, product_categories.category_name FROM products INNER JOIN product_categories ON products.category_id=product_categories.id ORDER BY products.id ASC LIMIT 5 OFFSET $offset");
+    $viewall = mysqli_query($conn, "CREATE OR REPLACE VIEW allproduk AS SELECT products.product_name, products.price, products.id, products.category_id, products.product_code, products.unit, products.description, products.stock, product_categories.category_name FROM products INNER JOIN product_categories ON products.category_id=product_categories.id ORDER BY products.id ASC LIMIT 5 OFFSET $offset");
     if(!$viewall) {
       echo "Error creating view: " . mysqli_error($conn);
     } else {

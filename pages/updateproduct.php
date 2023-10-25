@@ -359,9 +359,9 @@ while($prod_data = mysqli_fetch_array($dataold))
                             foreach ($result as $category) {
                               //if selected id
                               if ($category['id'] == $kat) {
-                                echo "<option value='" . $category['id'] . "' selected>" .$category['id']." - ". $category['category_name'] . "</option>";
+                                echo "<option value='" . $category['id'] . "' selected>" . $category['category_name'] . "</option>";
                               } else {
-                                echo "<option value='" . $category['id'] . "'>" .$category['id']." - ". $category['category_name'] . "</option>";
+                                echo "<option value='" . $category['id'] . "'>" . $category['category_name'] . "</option>";
                               }
                         }
                         ?>
