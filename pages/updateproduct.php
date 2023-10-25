@@ -268,7 +268,7 @@ while($prod_data = mysqli_fetch_array($dataold))
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="../index.html" class="nav-link active">
+                <a href="dashboard.php" class="nav-link active">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Menu Index</p>
                 </a>
