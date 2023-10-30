@@ -6,20 +6,41 @@
 
 <?php
  if(isset($_POST['submit'])) {
-     $name = $_POST['nama'];
-     $kat = $_POST['kategori'];
-     $kode = $_POST['kode'];
-     $desc = $_POST['desc'];
-     $price = $_POST['harga'];
-     $stock = $_POST['stok'];
 
-     $insert_query = "INSERT INTO products(product_name,category_id,product_code,description,price,stock) VALUES('$name','$kat','$kode','$desc','$price','$stock')";
-
-     if (mysqli_query($conn, $insert_query)) {
-        header("Location:newproduct.php");
-    } else {
-        echo "Error: " . mysqli_error($conn);
+    //  $name = $_POST['nama'];
+    //  $kat = $_POST['kategori'];
+    //  $kode = $_POST['kode'];
+    //  $desc = $_POST['desc'];
+    //  $price = $_POST['harga'];
+    //  $stock = $_POST['stok'];
+     
+    $files = array_filter($_FILES['upload']['name']); //Use something similar before processing files.
+    // Count the number of uploaded files in array
+    $total_count = count($_FILES['upload']['name']);
+    // Loop through every file
+    for( $i=0 ; $i < $total_count ; $i++ ) {
+      //The temp file path is obtained
+      $tmpFilePath = $_FILES['upload']['tmp_name'][$i];
+      //A file path needs to be present
+      if ($tmpFilePath != ""){
+          //Setup our new file path
+          $newFilePath = "../assets/images/" . $_FILES['upload']['name'][$i];
+          //File is uploaded to temp dir
+          if(move_uploaded_file($tmpFilePath, $newFilePath)) {
+            //Other code goes here
+          }
+      }
     }
+      
+
+
+    //  $insert_query = "INSERT INTO products(product_name,category_id,product_code,description,price,stock) VALUES('$name','$kat','$kode','$desc','$price','$stock')";
+
+    //  if (mysqli_query($conn, $insert_query)) {
+    //     header("Location:newproduct.php");
+    // } else {
+    //     echo "Error: " . mysqli_error($conn);
+    // }
     
  }
  ?>
@@ -278,8 +299,8 @@
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="../index.html">Home</a></li>
-              <li class="breadcrumb-item"><a href="./dashboard.html">Dashboard</a></li>
+              <li class="breadcrumb-item"><a href="../index.php">Home</a></li>
+              <li class="breadcrumb-item"><a href="./dashboard.php">Dashboard</a></li>
               <li class="breadcrumb-item active">Add Product</li>
             </ol>
           </div><!-- /.col -->
@@ -311,7 +332,7 @@
               </div>
               <!-- /.card-header -->
               <!-- form start -->
-              <form action="addproduct.php" method="post">
+              <form action="addproduct.php" method="post" enctype="multipart/form-data">
                 <div class="card-body">
                   <div class="form-group">
                     <label for="exampleInputEmail1">Nama Produk</label>
@@ -343,6 +364,10 @@
                   <div class="form-group">
                     <label for="exampleInputPassword1">Deskripsi Produk</label>
                     <input type="text" name="desc" class="form-control" id="desc" placeholder="Masukkan Deskripsi Produk">
+                  </div>
+                  <div class="form-group">
+                    <label for="exampleInputPassword1">Gambar Produk</label>
+                    <input type="file" name="upload[]" class="form-control" id="upload" multiple>
                   </div>
                 </div>
                 <!-- /.card-body -->
