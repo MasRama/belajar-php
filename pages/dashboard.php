@@ -55,10 +55,55 @@
         <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
-        <a href="../index.html" class="nav-link">Home</a>
+        <a class="nav-link" id="datecustom">
+          <?php 
+            //datetime
+            date_default_timezone_set('Asia/Jakarta');
+
+            //convert datetime to indonesia format
+            function tgl_indo($tanggal){
+              $bulan = array (
+                  1 =>   'Januari',
+                  'Februari',
+                  'Maret',
+                  'April',
+                  'Mei',
+                  'Juni',
+                  'Juli',
+                  'Agustus',
+                  'September',
+                  'Oktober',
+                  'November',
+                  'Desember'
+              );
+
+              $hari = array (
+                  1 =>    'Senin',
+                  'Selasa',
+                  'Rabu',
+                  'Kamis',
+                  'Jumat',
+                  'Sabtu',
+                  'Minggu'
+              ); 
+
+              $pecahkan = explode('-', $tanggal);
+              
+              // variabel pecahkan 0 = tanggal
+              // variabel pecahkan 1 = bulan
+              // variabel pecahkan 2 = tahun
+              
+              //return jadi hari, tanggal bulan tahun dan jam
+              return $hari[date('N', strtotime($tanggal))].', '.$pecahkan[2].' '.$bulan[ (int)$pecahkan[1] ].' '.$pecahkan[0] . ' ' . date('H:i:s');
+            }
+
+            echo tgl_indo(date('Y-m-d'));
+            
+          ?>
+        </a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
-        <a href="#" class="nav-link">Contact</a>
+       
       </li>
     </ul>
 
