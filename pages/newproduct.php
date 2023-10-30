@@ -20,7 +20,7 @@
   //search product
   if(isset($_GET['search'])) {
     $search = $_GET['search'];
-    $viewallsearch = mysqli_query($conn, "CREATE OR REPLACE VIEW allproduksearch AS SELECT products.product_name, products.id, products.price, products.category_id, products.product_code, products.unit, products.description, products.stock, product_categories.category_name FROM products INNER JOIN product_categories ON products.category_id=product_categories.id WHERE products.product_name LIKE '%$search%' OR products.category_id LIKE '%$search%' OR products.description LIKE '%$search%' ORDER BY products.id ASC LIMIT 5 OFFSET $offset");
+    $viewallsearch = mysqli_query($conn, "CREATE OR REPLACE VIEW allproduksearch AS SELECT products.product_name, products.image, products.id, products.price, products.category_id, products.product_code, products.unit, products.description, products.stock, product_categories.category_name FROM products INNER JOIN product_categories ON products.category_id=product_categories.id WHERE products.product_name LIKE '%$search%' OR products.category_id LIKE '%$search%' OR products.description LIKE '%$search%' ORDER BY products.id ASC LIMIT 5 OFFSET $offset");
     if(!$viewallsearch) {
       echo "Error creating view: " . mysqli_error($conn);
     } else {
@@ -30,7 +30,7 @@
       $rowcount = mysqli_num_rows( $resultall );
     }
   } else {
-    $viewall = mysqli_query($conn, "CREATE OR REPLACE VIEW allproduk AS SELECT products.product_name, products.price, products.id, products.category_id, products.product_code, products.unit, products.description, products.stock, product_categories.category_name FROM products INNER JOIN product_categories ON products.category_id=product_categories.id ORDER BY products.id ASC LIMIT 5 OFFSET $offset");
+    $viewall = mysqli_query($conn, "CREATE OR REPLACE VIEW allproduk AS SELECT products.product_name, products.image, products.price, products.id, products.category_id, products.product_code, products.unit, products.description, products.stock, product_categories.category_name FROM products INNER JOIN product_categories ON products.category_id=product_categories.id ORDER BY products.id ASC LIMIT 5 OFFSET $offset");
     if(!$viewall) {
       echo "Error creating view: " . mysqli_error($conn);
     } else {
@@ -369,6 +369,7 @@
                             <th>Stok</th>
                             <th>Kategori</th>
                             <th>Deskripsi</th>
+                            <th>Image</th>
                             <th>Aksi</th>
                           </tr>
                         </thead>
@@ -377,6 +378,9 @@
                         <?php  
                         $index = $page * 5 - 4;
                           while($prod_data = mysqli_fetch_array($result)) {
+                            //decode json
+                            //echo var_dump($prod_data['image']);
+                            $imagenow = json_decode($prod_data['image']);
                               echo "<tr>";
                               echo "<td> ". $index ." </td>";
                               echo "<td>".$prod_data['product_name']."</td>";
@@ -386,6 +390,11 @@
                               echo "<td>".$prod_data['stock']."</td>";   
                               echo "<td>".$prod_data['category_name']."</td>"; 
                               echo "<td>".$prod_data['description']."</td>";
+                              echo "<td>";
+                              foreach($imagenow as $item) {
+                                echo "<img src='$item' width='100px' height='100px'> <br>";
+                              }
+                              echo "</td>";
                               echo "<td> <a href='updateproduct.php?id=$prod_data[id]'> <button class='btn btn-info'> <i class='nav-icon fas fa-edit mr-2'></i>Edit</button> </a>  | <a href='delproduct.php?id=$prod_data[id]'> <button class='btn btn-danger'> <i class='nav-icon fas fa-trash-alt mr-2'></i>Delete</button>  </a> </td>"; 
                               // echo "<td><a href='edit.php?id=$user_data[id]'>Edit</a> | <a href='delete.php?id=$user_data[id]'>Delete</a></td>";
                               echo "</tr>";

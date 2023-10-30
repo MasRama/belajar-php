@@ -7,13 +7,16 @@
 <?php
  if(isset($_POST['submit'])) {
 
-    //  $name = $_POST['nama'];
-    //  $kat = $_POST['kategori'];
-    //  $kode = $_POST['kode'];
-    //  $desc = $_POST['desc'];
-    //  $price = $_POST['harga'];
-    //  $stock = $_POST['stok'];
+     $name = $_POST['nama'];
+     $kat = $_POST['kategori'];
+     $kode = $_POST['kode'];
+     $desc = $_POST['desc'];
+     $price = $_POST['harga'];
+     $stock = $_POST['stok'];
      
+     //create json array for allfile names and path
+    $files_arr = array();
+
     $files = array_filter($_FILES['upload']['name']); //Use something similar before processing files.
     // Count the number of uploaded files in array
     $total_count = count($_FILES['upload']['name']);
@@ -26,21 +29,26 @@
           //Setup our new file path
           $newFilePath = "../assets/images/" . $_FILES['upload']['name'][$i];
           //File is uploaded to temp dir
-          if(move_uploaded_file($tmpFilePath, $newFilePath)) {
-            //Other code goes here
+          if(move_uploaded_file($tmpFilePath, $newFilePath)) {           
+
+              //add new file path to array
+              $files_arr[] = $newFilePath;
+
           }
       }
     }
-      
+
+    //convert files array to json format
+    $files_arr = json_encode($files_arr);
 
 
-    //  $insert_query = "INSERT INTO products(product_name,category_id,product_code,description,price,stock) VALUES('$name','$kat','$kode','$desc','$price','$stock')";
+     $insert_query = "INSERT INTO products(product_name,category_id,product_code,description,price,stock,image) VALUES('$name','$kat','$kode','$desc','$price','$stock','$files_arr')";
 
-    //  if (mysqli_query($conn, $insert_query)) {
-    //     header("Location:newproduct.php");
-    // } else {
-    //     echo "Error: " . mysqli_error($conn);
-    // }
+     if (mysqli_query($conn, $insert_query)) {
+        header("Location:newproduct.php");
+    } else {
+        echo "Error: " . mysqli_error($conn);
+    }
     
  }
  ?>
