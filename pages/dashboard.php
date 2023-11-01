@@ -1,6 +1,19 @@
 <?php 
   include_once("koneksi_crud.php");
   
+
+  //check if user has session
+  session_start();
+  if(!isset($_SESSION['username'])){
+      header('Location: newlogin.php');
+  }
+
+  //if logout
+  if(isset($_POST['logout'])){
+      session_destroy();
+      header('Location: newlogin.php');
+  }
+
   $produk = mysqli_query($conn, "SELECT * FROM products");
   $produkcount = mysqli_num_rows($produk);
 
@@ -103,8 +116,9 @@
         </a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
-       
+            
       </li>
+      
     </ul>
 
     <!-- Right navbar links -->
@@ -293,6 +307,14 @@
                 Product
               </p>
             </a>
+          </li>
+          <li class="nav-item">
+            
+            <form action="dashboard.php" method="post">
+                <input type="hidden" name="logout" value="true">
+                <button type="submit" class="btn btn-danger">Logout</button>
+            </form>
+
           </li>
         </ul>
       </nav>
