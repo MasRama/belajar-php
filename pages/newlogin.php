@@ -1,28 +1,40 @@
 <?php 
-
 include_once("koneksi_crud.php");
 
-//get request if login
-if($_SERVER['REQUEST_METHOD'] == 'POST'){
-    $username = $_POST['username'];
-    $password = $_POST['password'];
+class Authentication {
+  private $databaseConnection;
 
-    //check user with md5 password
-    $sql = "SELECT * FROM users WHERE username = '$username' AND password = MD5('$password')";
+  public function __construct($databaseConnection) {
+      $this->databaseConnection = $databaseConnection;
+  }
 
-    $result = mysqli_query($conn, $sql);
+  public function authenticateUser($username, $password) {
+      $sql = "SELECT * FROM users WHERE username = '$username' AND password = MD5('$password')";
+      $result = $this->databaseConnection->getConnection()->query($sql);
 
-    //check if user exist
-    if(mysqli_num_rows($result) == 1){
-        $row = mysqli_fetch_assoc($result);
-        session_start();
-        $_SESSION['username'] = $row['username'];
-        $_SESSION['name'] = $row['name'];
-        header('Location: dashboard.php');
-    }else{
-        echo 'User tidak ditemukan';
-    }
+      if (mysqli_num_rows($result) == 1) {
+          $row = $result->fetch_assoc();
+          session_start();
+          $_SESSION['username'] = $row['username'];
+          $_SESSION['name'] = $row['name'];
+          header('Location: dashboard.php');
+      } else {
+          echo 'User tidak ditemukan';
+      }
+  }
 }
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+  $username = $_POST['username'];
+  $password = $_POST['password'];
+
+  // Inisialisasi autentikasi
+  $authentication = new Authentication($databaseConnection);
+
+  // Lakukan autentikasi
+  $authentication->authenticateUser($username, $password);
+}
+
 
 ?>
 

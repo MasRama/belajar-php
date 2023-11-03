@@ -2,26 +2,40 @@
   include_once("koneksi_crud.php");
   
 
-  //check if user has session
-  session_start();
-  if(!isset($_SESSION['username'])){
-      header('Location: newlogin.php');
+  class SessionManager {
+    public function __construct() {
+        session_start();
+    }
+
+    public function startSession() {
+        if (!isset($_SESSION['username'])) {
+            header('Location: newlogin.php');
+        }
+    }
+
+    public function logout() {
+        if (isset($_POST['logout'])) {
+            session_destroy();
+            header('Location: newlogin.php');
+        }
+    }
   }
 
-  //if logout
-  if(isset($_POST['logout'])){
-      session_destroy();
-      header('Location: newlogin.php');
-  }
+  $sessionManager = new SessionManager();
+  $sessionManager->startSession();
+  $sessionManager->logout();
+  
 
-  $produk = mysqli_query($conn, "SELECT * FROM products");
+  $produk = $databaseConnection -> getConnection() -> query("SELECT * FROM products");
   $produkcount = mysqli_num_rows($produk);
 
-  $customer = mysqli_query($conn, "SELECT * FROM customers");
+  $customer = $databaseConnection -> getConnection() -> query("SELECT * FROM customers");
   $customercount = mysqli_num_rows($customer);
 
-  $vendor = mysqli_query($conn, "SELECT * FROM vendors");
+  $vendor = $databaseConnection -> getConnection() -> query("SELECT * FROM vendors");
   $vendorcount = mysqli_num_rows($vendor);
+
+  $databaseConnection -> closeConnection()
 ?>
 
 <!DOCTYPE html>
