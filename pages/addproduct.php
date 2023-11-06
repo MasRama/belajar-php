@@ -1,56 +1,57 @@
 <?php 
   include_once("koneksi_crud.php");
-  $result = mysqli_query($conn, "SELECT * FROM product_categories ORDER BY id ASC");
-  // print_r($result);
-?>
 
-<?php
- if(isset($_POST['submit'])) {
+  $result = $databaseConnection->getConnection()->query("SELECT * FROM product_categories ORDER BY id ASC");
 
-     $name = $_POST['nama'];
-     $kat = $_POST['kategori'];
-     $kode = $_POST['kode'];
-     $desc = $_POST['desc'];
-     $price = $_POST['harga'];
-     $stock = $_POST['stok'];
-     
-     //create json array for allfile names and path
-    $files_arr = array();
 
-    $files = array_filter($_FILES['upload']['name']); //Use something similar before processing files.
-    // Count the number of uploaded files in array
-    $total_count = count($_FILES['upload']['name']);
-    // Loop through every file
-    for( $i=0 ; $i < $total_count ; $i++ ) {
-      //The temp file path is obtained
+class TambahProduk {
+  private $databaseConnection;
+
+  public function __construct($databaseConnection) {
+      $this->databaseConnection = $databaseConnection;
+  }
+
+  public function add($name, $category, $code, $description, $price, $stock, $files) {
+      $insert_query = "INSERT INTO products(product_name, category_id, product_code, description, price, stock, image) VALUES('$name','$category','$code','$description','$price','$stock','$files')";
+      
+      if ($this->databaseConnection->getConnection()->query($insert_query)) {
+        header("Location:newproduct.php");
+      } 
+  }
+}
+
+$tambahProduk = new TambahProduk($databaseConnection);
+
+if (isset($_POST['submit'])) {
+  $name = $_POST['nama'];
+  $kat = $_POST['kategori'];
+  $kode = $_POST['kode'];
+  $desc = $_POST['desc'];
+  $price = $_POST['harga'];
+  $stock = $_POST['stok'];
+
+  $files_arr = array();
+
+  $files = array_filter($_FILES['upload']['name']);
+  $total_count = count($_FILES['upload']['name']);
+
+  for ($i = 0; $i < $total_count; $i++) {
       $tmpFilePath = $_FILES['upload']['tmp_name'][$i];
-      //A file path needs to be present
-      if ($tmpFilePath != ""){
-          //Setup our new file path
+
+      if ($tmpFilePath != "") {
           $newFilePath = "../assets/images/" . $_FILES['upload']['name'][$i];
-          //File is uploaded to temp dir
-          if(move_uploaded_file($tmpFilePath, $newFilePath)) {           
 
-              //add new file path to array
+          if (move_uploaded_file($tmpFilePath, $newFilePath)) {
               $files_arr[] = $newFilePath;
-
           }
       }
-    }
+  }
 
-    //convert files array to json format
-    $files_arr = json_encode($files_arr);
+  $files_arr = json_encode($files_arr);
 
+  $tambahProduk->add($name, $kat, $kode, $desc, $price, $stock, $files_arr);
+}
 
-     $insert_query = "INSERT INTO products(product_name,category_id,product_code,description,price,stock,image) VALUES('$name','$kat','$kode','$desc','$price','$stock','$files_arr')";
-
-     if (mysqli_query($conn, $insert_query)) {
-        header("Location:newproduct.php");
-    } else {
-        echo "Error: " . mysqli_error($conn);
-    }
-    
- }
  ?>
 
 <!DOCTYPE html>

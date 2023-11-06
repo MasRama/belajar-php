@@ -1,46 +1,73 @@
 <?php 
   include_once("koneksi_crud.php");
 
-  $id = $_GET['page'];
-
-  //check if page is empty
-  $page = (empty($_GET['page'])) ? 1 : $_GET['page'];
-  $offset = ($page - 1) * 5;
-
-
-  $alldata = mysqli_query($conn, "SELECT * FROM products;");
-
-  //format number to rupiah
-  function rupiah($angka){
-    $hasil_rupiah = "Rp " . number_format($angka,0,',','.');
-    return $hasil_rupiah;
-  }
-
-
-  //search product
-  if(isset($_GET['search'])) {
-    $search = $_GET['search'];
-    $viewallsearch = mysqli_query($conn, "CREATE OR REPLACE VIEW allproduksearch AS SELECT products.product_name, products.image, products.id, products.price, products.category_id, products.product_code, products.unit, products.description, products.stock, product_categories.category_name FROM products INNER JOIN product_categories ON products.category_id=product_categories.id WHERE products.product_name LIKE '%$search%' OR products.category_id LIKE '%$search%' OR products.description LIKE '%$search%' ORDER BY products.id ASC LIMIT 5 OFFSET $offset");
-    if(!$viewallsearch) {
-      echo "Error creating view: " . mysqli_error($conn);
-    } else {
-      $result = mysqli_query($conn, "SELECT * FROM allproduksearch");
-
-      $resultall = mysqli_query($conn, "SELECT * FROM products WHERE product_name LIKE '%$search%' OR category_id LIKE '%$search%' OR description LIKE '%$search%'");
-      $rowcount = mysqli_num_rows( $resultall );
-    }
-  } else {
-    $viewall = mysqli_query($conn, "CREATE OR REPLACE VIEW allproduk AS SELECT products.product_name, products.image, products.price, products.id, products.category_id, products.product_code, products.unit, products.description, products.stock, product_categories.category_name FROM products INNER JOIN product_categories ON products.category_id=product_categories.id ORDER BY products.id ASC LIMIT 5 OFFSET $offset");
-    if(!$viewall) {
-      echo "Error creating view: " . mysqli_error($conn);
-    } else {
-      $result = mysqli_query($conn, "SELECT * FROM allproduk");
-      $rowcount = mysqli_num_rows( $alldata );
-    }
-  }
-
   
-  
+class ProductManager {
+    private $databaseConnection;
+
+    public function __construct($databaseConnection) {
+        $this->databaseConnection = $databaseConnection;
+    }
+
+    public function getProductsSearch($search, $offset) {
+      $viewallsearch = $this->databaseConnection -> getConnection() -> query("CREATE OR REPLACE VIEW allproduksearch AS SELECT products.product_name, products.image, products.id, products.price, products.category_id, products.product_code, products.unit, products.description, products.stock, product_categories.category_name FROM products INNER JOIN product_categories ON products.category_id=product_categories.id WHERE products.product_name LIKE '%$search%' OR products.category_id LIKE '%$search%' OR products.description LIKE '%$search%' ORDER BY products.id ASC LIMIT 5 OFFSET $offset");
+
+      if(!$viewallsearch) {
+        echo "Error creating view";
+      } else {
+        $result =$this->databaseConnection -> getConnection() -> query("SELECT * FROM allproduksearch");
+        $resultall = $this->databaseConnection -> getConnection() -> query("SELECT * FROM products WHERE product_name LIKE '%$search%' OR category_id LIKE '%$search%' OR description LIKE '%$search%'");
+        $rowcount = mysqli_num_rows( $resultall );
+        //return resuld and rowcount
+        return array("result" => $result, "rowCount" => $rowcount);
+      }
+    }
+
+    public function getProducts($offset) {
+        $alldata = $this->databaseConnection -> getConnection() -> query("SELECT * FROM products;");
+        $viewall = $this->databaseConnection -> getConnection() -> query("CREATE OR REPLACE VIEW allproduk AS SELECT products.product_name, products.image, products.price, products.id, products.category_id, products.product_code, products.unit, products.description, products.stock, product_categories.category_name FROM products INNER JOIN product_categories ON products.category_id=product_categories.id ORDER BY products.id ASC LIMIT 5 OFFSET $offset");
+      if(!$viewall) {
+        echo "Error creating view";
+      } else {
+        $result = $this->databaseConnection -> getConnection() -> query("SELECT * FROM allproduk");
+        $rowcount = mysqli_num_rows( $alldata );
+        return array("result" => $result, "rowCount" => $rowcount);
+      }
+    }
+
+    public function formatToRupiah($angka) {
+        $hasil_rupiah = "Rp " . number_format($angka, 0, ',', '.');
+        return $hasil_rupiah;
+    }
+}
+
+$id = $_GET['page'];
+
+//check if page is empty
+$page = (empty($_GET['page'])) ? 1 : $_GET['page'];
+$offset = ($page - 1) * 5;
+
+//format number to rupiah
+function rupiah($angka){
+  $hasil_rupiah = "Rp " . number_format($angka,0,',','.');
+  return $hasil_rupiah;
+}
+
+$productManager = new ProductManager($databaseConnection);
+
+//search product
+if(isset($_GET['search'])) {
+  $results = $productManager->getProductsSearch($_GET['search'], $offset);
+  $result = $results['result'];
+  $rowcount = $results['rowCount'];
+
+} else {
+  $results = $productManager->getProducts($offset);
+  $result = $results['result'];
+  $rowcount = $results['rowCount'];
+}
+
+
 ?>
 
 <!DOCTYPE html>
@@ -385,7 +412,7 @@
                               echo "<td> ". $index ." </td>";
                               echo "<td>".$prod_data['product_name']."</td>";
                               echo "<td>".$prod_data['product_code']."</td>";
-                              echo "<td>".rupiah($prod_data['price'])."</td>"; 
+                              echo "<td>".$prod_data['price']."</td>"; 
                               echo "<td>".$prod_data['unit']."</td>";   
                               echo "<td>".$prod_data['stock']."</td>";   
                               echo "<td>".$prod_data['category_name']."</td>"; 

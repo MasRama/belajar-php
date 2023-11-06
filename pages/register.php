@@ -1,37 +1,50 @@
 <?php 
 include_once("koneksi_crud.php");
 
-//get all request if regist
-if($_SERVER['REQUEST_METHOD'] == 'POST'){
-    $nama = $_POST['nama'];
-    $email = $_POST['email'];
-    $nohp = $_POST['nohp'];
-    $password = $_POST['password'];
-    $passwordretry = $_POST['passwordretry'];
 
-    //check if password match
-    if($password == $passwordretry){
-        //check if user exist
-        $sql = "SELECT * FROM users WHERE username = '$nohp'";
-        $result = mysqli_query($conn, $sql);
+class RegisterUser {
+  private $databaseConnection;
 
-        if(mysqli_num_rows($result) == 0){
-            //insert new user
-            $sql = "INSERT INTO users (name, email, phone_number, password, username, group_id) VALUES ('$nama', '$email', '$nohp', MD5('$password'), '$nohp', 3)";
-            $result = mysqli_query($conn, $sql);
+  public function __construct($databaseConnection) {
+      $this->databaseConnection = $databaseConnection;
+  }
 
-            if($result){
-                header('Location: newlogin.php');
-            }else{
-                echo 'Registrasi gagal';
-            }
-        }else{
-            echo 'Email sudah terdaftar';
-        }
-    }else{
-        echo 'Password tidak sama';
-    }
+  public function registerUser($nama, $email, $nohp, $password, $passwordretry) {
+      if ($password == $passwordretry) {
+          $sql = "SELECT * FROM users WHERE username = '$nohp'";
+          $result = $this->databaseConnection->getConnection()->query($sql);
+
+          if (mysqli_num_rows($result) == 0) {
+              $sql = "INSERT INTO users (name, email, phone_number, password, username, group_id) VALUES ('$nama', '$email', '$nohp', MD5('$password'), '$nohp', 3)";
+
+              $result = $this->databaseConnection->getConnection()->query($sql);
+
+              if ($result) {
+                  header('Location: newlogin.php');
+              } else {
+                  echo 'Registrasi gagal';
+              }
+          } else {
+              echo 'Email sudah terdaftar';
+          }
+      } else {
+          echo 'Password tidak sama';
+      }
+  }
 }
+
+$regist = new RegisterUser($databaseConnection);
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+  $nama = $_POST['nama'];
+  $email = $_POST['email'];
+  $nohp = $_POST['nohp'];
+  $password = $_POST['password'];
+  $passwordretry = $_POST['passwordretry'];
+
+  $regist->registerUser($nama, $email, $nohp, $password, $passwordretry);
+}
+
 
 ?>
 

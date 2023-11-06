@@ -1,43 +1,57 @@
 <?php 
   include_once("koneksi_crud.php");
-  $result = mysqli_query($conn, "SELECT * FROM product_categories ORDER BY id ASC");
-  // print_r($result);
+  $result = $databaseConnection -> getConnection() -> query("SELECT * FROM product_categories ORDER BY id ASC");
+  
 
-?>
+  class UpdateProduct {
+      private $databaseConnection;
 
-<?php
-  if(isset($_POST['submit']))
-{	
-    $id = $_GET['id'];
+      public function __construct($databaseConnection) {
+          $this->databaseConnection = $databaseConnection;
+      }
+
+      public function update($id, $name, $kat, $kode, $desc, $price, $stock) {
+
+          $query = "UPDATE products SET product_name='$name', category_id='$kat', product_code='$kode', description='$desc', price='$price', stock='$stock' WHERE id=$id";
+          if ($this->databaseConnection->getConnection()->query($query)) {
+              header("Location: newproduct.php");
+          } else {
+              echo "Error: ";
+          }
+      }
+
+      public function fetchData($id) {
+
+          $query = "SELECT * FROM products WHERE id=$id";
+          $dataold = $this->databaseConnection->getConnection()->query($query);
+
+          while ($prod_data = mysqli_fetch_array($dataold)) {
+              return $prod_data;
+          }
+
+          return null;
+      }
+  }
+
+// Usage
+$id = $_GET['id'];
+if (isset($_POST['submit'])) {
+    $productManager = new UpdateProduct($databaseConnection);
+
     $name = $_POST['nama'];
     $kat = $_POST['kategori'];
     $kode = $_POST['kode'];
     $desc = $_POST['desc'];
     $price = $_POST['harga'];
     $stock = $_POST['stok'];
-        
-    // update user data
-    // $updatedata = mysqli_query($conn, "UPDATE products SET product_name='$name',category_id='$kat',product_code='$kode', description='$desc', price='$price', stock='$stock' WHERE product_code=$kode");
-    
-    if (mysqli_query($conn, "UPDATE products SET product_name='$name',category_id='$kat',product_code='$kode', description='$desc', price='$price', stock='$stock' WHERE id=$id")) {
-        header("Location: newproduct.php");
-    } else {
-        echo "Error: " . mysqli_error($conn);
-    }
 
-    // Redirect to homepage to display updated user in list
-    
+    $productManager->update($id, $name, $kat, $kode, $desc, $price, $stock);
 }
-?>
 
-<?php
-$id = $_GET['id'];
- 
-// Fetech user data based on id
-$dataold = mysqli_query($conn, "SELECT * FROM products WHERE id=$id");
- 
-while($prod_data = mysqli_fetch_array($dataold))
-{
+$productManager = new UpdateProduct($databaseConnection);
+$prod_data = $productManager->fetchData($id);
+
+if ($prod_data) {
     $name = $prod_data['product_name'];
     $kat = $prod_data['category_id'];
     $kode = $prod_data['product_code'];
@@ -45,6 +59,8 @@ while($prod_data = mysqli_fetch_array($dataold))
     $price = $prod_data['price'];
     $stock = $prod_data['stock'];
 }
+
+
 ?>
 
 <!DOCTYPE html>
